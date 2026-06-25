@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1L Özmal Araç Takip</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#fff}
+    header{padding:34px 38px;background:linear-gradient(135deg,#0891b2,#0f172a);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+    h1{margin:0;font-size:38px}
+    h2,h3{margin-top:0}
+    .muted{color:#9fb7d7}
+    .wrap{max-width:1780px;margin:0 auto;padding:32px}
+    .loginBox{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    input,select,button,textarea{width:100%;padding:14px;border-radius:14px;border:1px solid #334155;background:#020617;color:white;margin:6px 0;outline:none}
+    input[type=file]{padding:12px}
+    button{background:#22d3ee;color:#06121f;font-weight:800;cursor:pointer;border:0}
+    button.small{width:auto;padding:8px 12px;margin:2px}
+    button.green{background:#22c55e;color:#052e16}
+    button.red{background:#ef4444;color:white}
+    .hidden{display:none!important}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+    .tab{width:auto;background:#111827;color:#dbeafe;border:1px solid #263244;border-radius:999px;padding:13px 20px}
+    .tab.active{background:#22d3ee;color:#06121f}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .dashboardForms{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    .detail{display:grid;grid-template-columns:.72fr 1.28fr;gap:22px}
+    .forms{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .card{background:#111827;border:1px solid #263244;border-radius:20px;padding:24px;margin-bottom:18px;box-shadow:0 10px 30px #0003}
+    .stat{font-size:40px;font-weight:900;color:#67e8f9}
+    .badge{display:inline-block;padding:8px 13px;border-radius:999px;font-size:13px;font-weight:800;margin:3px 4px 3px 0}
+    .ok{background:#064e3b;color:#a7f3d0}.wait{background:#78350f;color:#fde68a}.danger{background:#7f1d1d;color:#fecaca}.blue{background:#164e63;color:#a5f3fc}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:13px;border-bottom:1px solid #334155;text-align:left;vertical-align:top}
+    th{background:#020617;color:#b7c8e6}
+    a{color:#67e8f9;font-weight:bold}
+    .vehicleCard{cursor:pointer;transition:.15s}
+    .vehicleCard:hover{transform:translateY(-2px);border-color:#22d3ee}
+    img.preview{width:120px;max-height:90px;object-fit:cover;border-radius:12px;border:1px solid #334155}
+    @media(max-width:1100px){.grid,.dashboardForms,.row,.detail,.forms{grid-template-columns:1fr}h1{font-size:30px}.wrap{padding:18px}}
+  
+.loginRequiredPanel{
+  max-width:760px;
+  margin:70px auto;
+  text-align:center;
+  background:#111827;
+  border:1px solid #263244;
+  border-radius:26px;
+  padding:42px;
+  box-shadow:0 20px 50px #0005;
+}
+.loginRequiredPanel h2{
+  font-size:34px;
+  margin-bottom:12px;
+}
+.loginRequiredPanel .lockIcon{
+  font-size:54px;
+  margin-bottom:12px;
+}
+
+
+.siteFooter{
+  width:100%;
+  text-align:center;
+  padding:28px 10px;
+  margin-top:40px;
+  color:#94a3b8;
+  font-size:14px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+
+.fileList a{display:inline-block;margin:2px 0;color:#67e8f9;font-weight:800}
+.fileList{line-height:1.55}
+</style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+<header>
+  <div>
+    <h1>🚛 1L Özmal Araç Takip Sistemi</h1>
+    
+  </div>
+  <div id="loginBox" class="loginBox">
+    <input id="username" autocomplete="off" placeholder="Kullanıcı adı" style="width:170px">
+    <input id="password" type="password" autocomplete="new-password" placeholder="Şifre" style="width:150px">
+    <button onclick="login()" style="width:auto">Giriş Yap</button>
+  </div>
+  <div id="userBox" class="loginBox hidden">
+    <span id="activeUser"></span>
+    <button onclick="logout()" style="width:auto">Çıkış</button>
+  </div>
+</header>
+
+<div id="loginRequired" class="loginRequiredPanel">
+  <div class="lockIcon">🔐</div>
+  <h2>Sisteme giriş yap</h2>
+  <p class="muted">Araç takip panelini görüntülemek için kullanıcı girişi yapmalısın.</p>
+</div>
+
+<div class="wrap hidden" id="appContent">
+  <div id="errorBox" class="card hidden" style="border-color:#ef4444;color:#fecaca"></div>
+
+  <div class="tabs">
+    <button id="tabDashboard" class="tab active" onclick="show('Dashboard')">Ana Panel</button>
+    <button id="tabVehicles" class="tab" onclick="show('Vehicles')">Araçlar</button>
+    <button id="tabVehicleDocs" class="tab" onclick="show('VehicleDocs')">Araç Evrakları</button>
+    <button id="tabInspection" class="tab" onclick="show('Inspection')">Muayene</button>
+    <button id="tabMaintenance" class="tab" onclick="show('Maintenance')">Bakım Takibi</button>
+    <button id="tabKm" class="tab" onclick="show('Km')">Aylık KM</button>
+    <button id="tabInvoices" class="tab" onclick="show('Invoices')">PDF Faturalar</button>
+    <button id="tabPenalty" class="tab" onclick="show('Penalty')">Ceza Takibi</button>
+    <button id="tabSuppliers" class="tab" onclick="show('Suppliers')">Tedarikçiler</button>
+    <button id="tabUsers" class="tab" onclick="show('Users')">Üyeler</button>
+  </div>
+
+  <section id="pageDashboard">
+    <div class="grid">
+      <div class="card"><div class="muted">Toplam Araç</div><div class="stat" id="sVehicles">0</div></div>
+      <div class="card"><div class="muted">Yaklaşan Muayene</div><div class="stat" id="sInspection">0</div></div>
+      <div class="card"><div class="muted">PDF Fatura</div><div class="stat" id="sInvoices">0</div></div>
+      <div class="card"><div class="muted">Onay Bekleyen</div><div class="stat" id="sWaiting">0</div></div>
+      <div class="card"><div class="muted">Bakımı Geçen Araç</div><div class="stat" id="sMaintenanceLate">0</div></div>
+      <div class="card"><div class="muted">⚠️ Psikoteknik Eksik/Süresi Bitmiş</div><div class="stat" id="sSrcWarn">0</div></div>
+    </div>
+
+    <div class="dashboardForms">
+      <div class="card">
+        <h2>Admin Araç Ekle</h2>
+        <input id="vPlate" placeholder="Plaka">
+        <input id="vBrand" placeholder="Araç marka/model">
+        <input id="vModelYear" type="number" placeholder="Araç model yılı">
+        <input id="vOperation" placeholder="Çalıştığı operasyon">
+        <input id="vKm" type="text" inputmode="numeric" placeholder="Son KM">
+        <label class="muted">📅 Muayene Bitiş Tarihi</label>
+        <input id="vInspection" type="date">
+        <input id="vDriverName" placeholder="Şoför adı soyadı">
+        <input id="vDriverPhone" placeholder="Şoför telefonu">
+        <input id="vSalary" type="text" inputmode="numeric" placeholder="Şoför maaşı">
+        <input id="vMealMoney" type="text" inputmode="numeric" placeholder="Yemek parası">
+        <input id="vPremium" type="text" inputmode="numeric" placeholder="Prim">
+        <label class="muted">🧠 Psikoteknik Belge Tarihi</label>
+        <input id="vSrcDate" type="date">
+        <input id="vMaintenanceInterval" type="text" inputmode="numeric" placeholder="Bakım aralığı KM">
+        <input id="vLastMaintenanceKm" type="text" inputmode="numeric" placeholder="Son bakım KM">
+        <button onclick="addVehicle()">Araç Ekle</button>
+      </div>
+
+      <div class="card">
+        <h2>Bakım / İşlem Kaydı</h2>
+        <select id="logPlate">
+<option value="">🚛 Plaka Seçiniz</option>
+</select>
+        <select id="logType">
+          <option value="Bakım">🔧 Bakım</option>
+          <option value="Akü">🔋 Akü</option>
+          <option value="Lastik Değişimi">🛞 Lastik Değişimi</option>
+          <option value="Kasa">📦 Kasa</option>
+          <option value="Klima">❄️ Klima</option>
+          <option value="Lift">🏗️ Lift</option>
+          <option value="Mağaza Hasarı">🏬 Mağaza Hasarı</option>
+          <option value="Depo Hasarı">🏭 Depo Hasarı</option>
+          <option value="Diğer">🧩 Diğer</option>
+        </select>
+        <input id="logText" placeholder="Ne yapıldı? Örn: Yağ ve filtre değişimi">
+        <p class="muted">Bakım seçilirse bakım KM güncellenir. Diğer işlemler bakım KM’sini değiştirmez.</p>
+        <input id="logKm" type="text" inputmode="numeric" required min="1" placeholder="KM zorunlu">
+        <input id="logCost" type="text" inputmode="numeric" required min="1" placeholder="Tutar zorunlu">
+        <input id="logPdf" type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,image/gif">
+        <p class="muted">Bakım kaydı için fatura dosyası yüklemek zorunludur. Birden fazla PDF veya fotoğraf yükleyebilirsin.</p>
+        <button onclick="addLog()">İşlem Kaydet</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="pageVehicles" class="hidden">
+    <div class="detail">
+      <div class="card">
+        <h2>Araçlar</h2>
+        <input id="vehicleSearch" placeholder="Plaka/marka ara" onkeyup="render()">
+        <select id="operationFilter" onchange="render()"><option value="">Tüm Operasyonlar</option></select>
+        <div id="vehicleCards"></div>
+      </div>
+      <div class="card">
+        <h2>Araç Detayı</h2>
+        <div id="vehicleDetail" class="muted">Araç seç.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Araç Evrakı / Fotoğraf Ekle</h2>
+      <div class="forms">
+        <select id="docPlate">
+<option value="">🚛 Plaka Seçiniz</option>
+</select>
+        <select id="docType">
+          <option>Trafik Sigortası</option><option>Kasko</option><option>Ruhsat</option>
+          <option>Araç Fotoğrafı</option><option>Kaza Fotoğrafı</option><option>Diğer</option>
+        </select>
+        <input id="docDate" type="date">
+        <input id="docFile" type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,image/gif">
+      </div>
+      <input id="docNote" placeholder="Not, isteğe bağlı">
+      <button onclick="uploadVehicleDocument()">Araç Evrakı Ekle</button>
+    </div>
+
+    <div class="card" id="editVehicleBox" style="display:none">
+      <h2>✏️ Araç Bilgilerini Düzenle</h2>
+      <input id="editOldPlate" type="hidden">
+      <div class="forms">
+        <input id="editPlate" placeholder="Plaka">
+        <input id="editBrand" placeholder="Araç marka/model">
+        <input id="editModelYear" type="number" placeholder="Araç model yılı">
+        <input id="editOperation" placeholder="Çalıştığı operasyon">
+        <input id="editKm" type="text" inputmode="numeric" placeholder="Son KM">
+      </div>
+      <label class="muted">📅 Muayene Bitiş Tarihi</label><input id="editInspection" type="date">
+      <input id="editDriverName" placeholder="Şoför adı soyadı">
+      <input id="editDriverPhone" placeholder="Şoför telefonu">
+      <input id="editSalary" type="text" inputmode="numeric" placeholder="Şoför maaşı">
+      <input id="editMealMoney" type="text" inputmode="numeric" placeholder="Yemek parası">
+      <input id="editPremium" type="text" inputmode="numeric" placeholder="Prim">
+      <label class="muted">🧠 Psikoteknik Belge Tarihi</label><input id="editSrcDate" type="date">
+      <input id="editMaintenanceInterval" type="text" inputmode="numeric" placeholder="Bakım aralığı KM">
+      <input id="editLastMaintenanceKm" type="text" inputmode="numeric" placeholder="Son bakım KM">
+      <button class="green" onclick="saveVehicleEdit()">Kaydet</button>
+      <button class="red" onclick="editVehicleBox.style.display='none'">Vazgeç</button>
+    </div>
+
+    <div class="card">
+      <h2>Araç Listesi</h2>
+      <table>
+        <thead><tr><th>Plaka</th><th>Araç</th><th>Model Yılı</th><th>Operasyon</th><th>Şoför</th><th>Maaş Bilgisi</th><th>KM</th><th>Son İşlem</th><th>Bakım</th><th>Muayene</th><th>İşlem</th></tr></thead>
+        <tbody id="vehicleTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+
+  <section id="pageVehicleDocs" class="hidden">
+    <div class="grid">
+      <div class="card"><div class="muted">Toplam Evrak</div><div class="stat" id="docTotalCount">0</div></div>
+      <div class="card"><div class="muted">PDF Evrak</div><div class="stat" id="docPdfCount">0</div></div>
+      <div class="card"><div class="muted">Fotoğraf</div><div class="stat" id="docImageCount">0</div></div>
+      <div class="card"><div class="muted">Evraklı Araç</div><div class="stat" id="docVehicleCount">0</div></div>
+    </div>
+
+    <div class="card">
+      <h2>📁 Araç Evrakı / Fotoğraf Ekle</h2>
+      <p class="muted">Trafik sigortası, kasko, ruhsat, araç fotoğrafı ve kaza fotoğrafı yükleyebilirsin. Cezalar ayrı “Ceza Takibi” sekmesindedir.</p>
+      <div class="forms">
+        <select id="docPlateMain">
+<option value="">🚛 Plaka Seçiniz</option>
+</select>
+        <select id="docTypeMain">
+          <option>Trafik Sigortası</option>
+          <option>Kasko</option>
+          <option>Ruhsat</option>
+          <option>Araç Fotoğrafı</option>
+          <option>Kaza Fotoğrafı</option>
+          <option>Sürücü Belgesi</option>
+          <option>Psikoteknik Belgesi</option>
+          <option>SRC Belgesi</option>
+          <option>Ehliyet</option>
+          <option>Sağlık Raporu</option>
+          <option>Diğer</option>
+        </select>
+        <input id="docDateMain" type="date">
+        <input id="docFileMain" type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,image/gif">
+      </div>
+      <input id="docNoteMain" placeholder="Not, isteğe bağlı">
+      <button onclick="uploadVehicleDocumentFromDocsPage()">Araç Evrakı Ekle</button>
+    </div>
+
+    <div class="card">
+      <h2>📄 Araç Evrakları Listesi</h2>
+      
+<div class="forms">
+  <select id="docPlateFilter" onchange="render()">
+    <option value="">Tüm Plakalar</option>
+  </select>
+  <select id="docTypeFilter" onchange="render()">
+    <option value="">Tüm Evrak Türleri</option>
+    <option>Trafik Sigortası</option>
+    <option>Kasko</option>
+    <option>Ruhsat</option>
+    <option>Araç Fotoğrafı</option>
+    <option>Kaza Fotoğrafı</option>
+    <option>Sürücü Belgesi</option>
+    <option>Psikoteknik Belgesi</option>
+    <option>SRC Belgesi</option>
+    <option>Ehliyet</option>
+    <option>Sağlık Raporu</option>
+    <option>Diğer</option>
+  </select>
+  <input id="docSearch" placeholder="Dosya adı veya not ara" onkeyup="render()">
+</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tarih</th>
+            <th>Plaka</th>
+            <th>Evrak Türü</th>
+            <th>Dosya</th>
+            <th>Not</th>
+            <th>Ekleyen</th>
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody id="vehicleDocsTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="pageInspection" class="hidden">
+    <div class="card"><h2>🚨 Araç Muayene Takibi</h2><table><thead><tr><th>Plaka</th><th>Araç</th><th>Muayene</th><th>Kalan</th><th>Durum</th><th>İşlem</th></tr></thead><tbody id="inspectionTable"></tbody></table></div>
+  </section>
+
+  <section id="pageMaintenance" class="hidden">
+    <div class="card"><h2>🔧 Bakım Takibi</h2><table><thead><tr><th>Plaka</th><th>Araç</th><th>Mevcut KM</th><th>Son Bakım KM</th><th>Aralık</th><th>Kalan KM</th><th>Durum</th><th>İşlem</th></tr></thead><tbody id="maintenanceTable"></tbody></table></div>
+  </section>
+
+  <section id="pageKm" class="hidden">
+    <div class="row">
+      <div class="card"><h2>Aylık KM Ekle</h2><select id="mPlate"><option value="">🚛 Plaka Seçiniz</option></select><input id="mMonth" type="month"><input id="mStart" type="text" inputmode="numeric" placeholder="Ay başı KM"><input id="mEnd" type="text" inputmode="numeric" placeholder="Ay sonu KM"><button onclick="addMonthlyKm()">Kaydet</button></div>
+      <div class="card"><h2>Excel Aktarım</h2><select id="exportMonth"></select><button class="green" onclick="exportAllVehiclesXlsx()">Tüm Araçları Ayrı Sheet Excel İndir</button><button onclick="exportAll()">Tümünü CSV İndir</button></div>
+    </div>
+    <div class="card"><table><thead><tr><th>Ay</th><th>Plaka</th><th>Araç</th><th>Başlangıç</th><th>Bitiş</th><th>Yapılan KM</th><th>Ekleyen</th><th>İşlem</th></tr></thead><tbody id="kmTable"></tbody></table></div>
+  </section>
+
+  <section id="pageInvoices" class="hidden">
+    <div class="card"><h2>PDF Faturalar</h2>
+<select id="invoicePlateFilter" onchange="render()"><option value="">Tüm Plakalar</option></select><table><thead><tr><th>Tarih</th><th>Plaka</th><th>PDF</th><th>Kaynak</th><th>Durum</th><th>Fatura Tutarı</th><th>Ekleyen</th><th>İşlem</th></tr></thead><tbody id="invoiceTable"></tbody></table></div>
+  </section>
+
+  <section id="pagePenalty" class="hidden">
+    <div class="grid">
+      <div class="card"><div class="muted">Toplam Ceza</div><div class="stat" id="penaltyCount">0</div></div>
+      <div class="card"><div class="muted">Toplam Ceza Tutarı</div><div class="stat" id="penaltyTotalAmount">0 ₺</div></div>
+    </div>
+    <div class="card">
+      <h2>🚨 Ceza Evrakı / Fotoğraf Ekle</h2>
+      <div class="forms"><select id="penaltyPlate">
+<option value="">🚛 Plaka Seçiniz</option>
+</select><input id="penaltyDate" type="date"><input id="penaltyAmount" type="text" inputmode="numeric" placeholder="Ceza tutarı"><input id="penaltyFile" type="file" accept="application/pdf,image/jpeg,image/png,image/webp,image/gif"></div>
+      <input id="penaltyNote" placeholder="Ceza notu">
+      <button onclick="uploadPenalty()">Ceza Yükle</button>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px">
+        <h2 style="margin:0">Ceza Kayıtları</h2>
+        <div style="background:#0b1220;border:1px solid #263244;border-radius:16px;padding:12px 16px;min-width:230px">
+          <div class="muted">Seçili Plaka Ceza Toplamı</div>
+          <div class="stat" id="penaltyFilteredTotalAmount" style="font-size:24px">0 ₺</div>
+        </div>
+      </div>
+      <div class="forms" style="margin-bottom:14px">
+        <select id="penaltyPlateListFilter" onchange="render()">
+          <option value="">Tüm Plakalar</option>
+        </select>
+        <button class="green" onclick="exportPenaltiesXlsx()">Excel ile Toplu İndir</button>
+      </div>
+      <table><thead><tr><th>Tarih</th><th>Plaka</th><th>Dosya</th><th>Tutar</th><th>Not</th><th>Ekleyen</th><th>İşlem</th></tr></thead><tbody id="penaltyTable"></tbody></table></div>
+  </section>
+
+
+  <section id="pageSuppliers" class="hidden">
+    <div class="grid">
+      <div class="card"><div class="muted">Toplam Tedarikçi İşlemi</div><div class="stat" id="supplierCount">0</div></div>
+      <div class="card"><div class="muted">Toplam Tutar</div><div class="stat" id="supplierTotalAmount">0 ₺</div></div>
+      <div class="card"><div class="muted">PDF Fatura</div><div class="stat" id="supplierPdfCount">0</div></div>
+      <div class="card"><div class="muted">Fotoğraf</div><div class="stat" id="supplierImageCount">0</div></div>
+    </div>
+
+    <div class="card">
+      <h2>🏗️ Tedarikçi İşlem Ekle</h2>
+      <p class="muted">Kasa, klima, lift, mağaza hasarı, depo hasarı veya diğer işlemler için PDF fatura ve fotoğraf yükleyebilirsin.</p>
+      <div class="forms">
+        <select id="supplierProcessType">
+          <option value="Kasa">📦 Kasa</option>
+          <option value="Klima">❄️ Klima</option>
+          <option value="Lift">🏗️ Lift</option>
+          <option value="Mağaza Hasarı">🏬 Mağaza Hasarı</option>
+          <option value="Depo Hasarı">🏭 Depo Hasarı</option>
+          <option value="Diğer">🧩 Diğer</option>
+        </select>
+        <input id="supplierName" placeholder="Tedarikçi firma / usta adı">
+        <select id="supplierPlate"><option value="">🚛 Plaka Seçiniz</option></select>
+        <input id="supplierDate" type="date">
+        <input id="supplierAmount" type="text" inputmode="numeric" placeholder="Tutar">
+        <input id="supplierFiles" type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,image/gif">
+      </div>
+      <textarea id="supplierNote" placeholder="Bilgi / açıklama: yapılan işlem, hasar detayı, parça bilgisi vb."></textarea>
+      <button onclick="addSupplierRecord()">Tedarikçi İşlemi Kaydet</button>
+    </div>
+
+    <div class="card">
+      <h2>📋 Tedarikçi İşlem Kayıtları</h2>
+      <div class="forms" style="margin-bottom:14px">
+        <select id="supplierTypeFilter" onchange="render()">
+          <option value="">Tüm İşlem Türleri</option>
+          <option value="Kasa">Kasa</option>
+          <option value="Klima">Klima</option>
+          <option value="Lift">Lift</option>
+          <option value="Mağaza Hasarı">Mağaza Hasarı</option>
+          <option value="Depo Hasarı">Depo Hasarı</option>
+          <option value="Diğer">Diğer</option>
+        </select>
+        <select id="supplierPlateFilter" onchange="render()"><option value="">Tüm Plakalar</option></select>
+        <input id="supplierSearch" placeholder="Firma, bilgi veya dosya ara" onkeyup="render()">
+      </div>
+      <table>
+        <thead><tr><th>Tarih</th><th>İşlem</th><th>Tedarikçi</th><th>Plaka</th><th>Dosyalar</th><th>Tutar</th><th>Bilgi</th><th>Ekleyen</th><th>İşlem</th></tr></thead>
+        <tbody id="supplierTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="pageUsers" class="hidden">
+    <div class="row">
+      <div class="card"><h2>Üye Ekle</h2><input id="uName" placeholder="Ad Soyad"><input id="uUsername" placeholder="Kullanıcı adı"><input id="uPass" placeholder="Şifre"><input id="uMail" placeholder="Mail"><select id="uRole"><option>Kullanıcı</option><option>Yetkili2</option><option>Yetkili</option><option>Admin</option></select><button onclick="addUser()">Üye Ekle</button></div>
+      <div class="card"><h2>Üye Yetkileri</h2><p><span class="badge ok">Admin</span> Tüm işlemler</p><p><span class="badge wait">Yetkili</span> Ödeme işaretler</p><p><span class="badge blue">Yetkili2</span> Fatura onaylar, araç yönetir</p><p><span class="badge danger">Kullanıcı</span> Kayıt girer</p></div>
+    </div>
+    <div class="card"><table><thead><tr><th>Ad</th><th>Kullanıcı</th><th>Mail</th><th>Rol</th><th>İşlem</th></tr></thead><tbody id="usersTable"></tbody></table></div>
+  </section>
+
+  <section id="pageSettings" class="hidden">
+    <div class="card"><h2>Veri Kurtarma</h2><button class="red" onclick="resetDemoData()">Demo Verileri Geri Yükle</button></div>
+    <div class="card"><h2>Mail Gidecek Kişiler</h2><textarea id="notifyMails"></textarea><button onclick="saveMails()">Kaydet</button></div>
+  </section>
+</div>
+
+<script>
+
+
+async function safeFetchJsonFromResponse(res){
+  const text = await res.text();
+  let data;
+  try{
+    data = JSON.parse(text);
+  }catch(e){
+    console.error("HTML_OR_NON_JSON_RESPONSE:", text.slice(0, 500));
+    throw new Error("Sunucu JSON yerine HTML döndürdü. 30 saniye bekle ve tekrar dene.");
+  }
+  if(!res.ok || data.ok === false) throw new Error(data.message || "İşlem başarısız.");
+  return data;
+}
+
+async function safeFetchJson(url, options={}){
+  const res = await fetch(url, options);
+  const text = await res.text();
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch(e) {
+    console.error("HTML_OR_NON_JSON_RESPONSE:", text.slice(0, 500));
+    throw new Error("Sunucu geçici olarak HTML hata sayfası döndürdü. Render ücretsiz planda yeniden başlıyor olabilir. 30 saniye bekle ve tekrar dene.");
+  }
+
+  if(!res.ok || data.ok === false){
+    throw new Error(data.message || "İşlem başarısız.");
+  }
+
+  return data;
+}
+
+let db={users:[],vehicles:[],vehicleLogs:[],invoices:[],monthlyKm:[],vehicleDocuments:[],suppliers:[]};
+let currentUser=null, selectedPlate=null;
+
+
+async function parseJsonResponse(res){
+  const text = await res.text();
+  try{
+    return JSON.parse(text);
+  }catch(e){
+    throw new Error("Sunucu JSON yerine HTML döndürdü. Büyük ihtimalle Render timeout/restart oldu. 30 saniye sonra tekrar dene.");
+  }
+}
+
+async function api(url, options={}){ return safeFetchJson(url, options); }
+function cleanNumber(v){ return String(v ?? "").replace(/\D/g, ""); }
+function n(v){ return Number(cleanNumber(v) || 0); }
+function fmt(v){ return n(v).toLocaleString("tr-TR"); }
+function formatNumberText(value){ const raw = cleanNumber(value); return raw ? Number(raw).toLocaleString("tr-TR") : ""; }
+function bindMoneyKmFormatting(){
+  const ids = ["vKm","vSalary","vMealMoney","vPremium","vMaintenanceInterval","vLastMaintenanceKm","editKm","editSalary","editMealMoney","editPremium","editMaintenanceInterval","editLastMaintenanceKm","logKm","logCost","mStart","mEnd","penaltyAmount"];
+  ids.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el || el.dataset.formatBound) return;
+    el.dataset.formatBound = "1";
+    el.addEventListener("input", ()=>{ el.value = formatNumberText(el.value); });
+    el.addEventListener("blur", ()=>{ el.value = formatNumberText(el.value); });
+  });
+}
+function daysUntil(s){ if(!s) return 999999; const d=new Date(s); if(isNaN(d)) return 999999; return Math.ceil((d-new Date())/86400000); }
+function maintenanceRemaining(v){ const interval=n(v.maintenanceInterval), last=n(v.lastMaintenanceKm), cur=n(v.km); if(interval<=0) return 999999; return interval-(cur-last); }
+function maintenanceBadge(v){ const r=maintenanceRemaining(v); if(r<0) return '<span class="badge danger">🔴 Bakımı Geçmiş</span>'; if(r<=2000) return '<span class="badge wait">🟠 Bakım Yaklaşıyor</span>'; return '<span class="badge ok">🟢 Güvende</span>'; }
+function psikoExpired(v){ if(!v.srcDate) return true; const d=new Date(v.srcDate); if(isNaN(d)) return true; d.setFullYear(d.getFullYear()+5); return d<new Date(); }
+function psikoEnd(v){ if(!v.srcDate) return "-"; const d=new Date(v.srcDate); if(isNaN(d)) return "-"; d.setFullYear(d.getFullYear()+5); return d.toISOString().slice(0,10); }
+function missingWarnings(v){ const w=[]; if(!v.inspection) w.push("📅 Muayene yok"); if(psikoExpired(v)) w.push(!v.srcDate?"🧠 Psikoteknik yok":"🧠 Psikoteknik süresi bitti"); if(!v.maintenanceInterval||!v.lastMaintenanceKm) w.push("🔧 Bakım bilgisi eksik"); if(!v.driverName) w.push("👨‍✈️ Şoför yok"); return w.map(x=>`<span class="badge danger">${x}</span>`).join(""); }
+function isAdmin(){return currentUser&&currentUser.role==="Admin"} 
+function isYetkili2(){return currentUser&&["Admin","Yetkili2"].includes(currentUser.role)}
+function isYetkili(){return currentUser&&["Admin","Yetkili"].includes(currentUser.role)}
+function canManageVehicles(){return isYetkili2()}
+function canApproveInvoices(){return isYetkili2()}
+function canPayInvoices(){return isYetkili()}
+function roleBadge(r){return r==="Admin"?'<span class="badge ok">Admin</span>':r==="Yetkili"?'<span class="badge wait">Yetkili</span>':r==="Yetkili2"?'<span class="badge blue">Yetkili2</span>':'<span class="badge danger">Kullanıcı</span>'}
+function invBadge(i){ if(i.paid) return '<span class="badge ok">ÖDEME YAPILDI</span>'; if(i.yetkili2Approved) return '<span class="badge wait">YETKİLİ ÖDEME BEKLİYOR</span>'; return '<span class="badge wait">YETKİLİ2 ONAYI BEKLİYOR</span>'; }
+function canSeeInvoice(i){ if(!currentUser) return false; if(currentUser.role==="Admin") return true; if(currentUser.role==="Yetkili2") return true; if(currentUser.role==="Yetkili") return !!i.yetkili2Approved; return i.addedByUsername===currentUser.username || i.addedBy===currentUser.name; }
+
+function invoiceFilesHtml(i){
+  if(Array.isArray(i.files) && i.files.length){
+    return i.files.map(f => `<a href="${f.fileUrl}" target="_blank">${f.fileName || "Dosya"}</a>`).join("<br>");
+  }
+  return i.fileUrl ? `${invoiceFilesHtml(i)}<br><button class="small" onclick="changeInvoicePlate('${i.id}')">Plaka Değiştir</button>` : "-";
+}
+
+
+function invoiceFilesHtml(item){
+  const files = [];
+
+  if(Array.isArray(item.files)){
+    item.files.forEach(f => files.push(f));
+  }
+
+  if(Array.isArray(item.invoiceFiles)){
+    item.invoiceFiles.forEach(f => files.push(f));
+  }
+
+  if(item.fileUrl || item.invoiceUrl){
+    files.push({
+      fileUrl: item.fileUrl || item.invoiceUrl,
+      fileName: item.fileName || item.invoiceName || "Dosya"
+    });
+  }
+
+  const unique = [];
+  const seen = new Set();
+
+  files.forEach(f => {
+    const url = f.fileUrl || f.invoiceUrl || f.url || "";
+    const name = f.fileName || f.invoiceName || f.name || "Dosya";
+    if(!url || seen.has(url)) return;
+    seen.add(url);
+    unique.push({ url, name });
+  });
+
+  if(unique.length === 0) return "-";
+
+  if(unique.length === 1){
+    return `<a href="${unique[0].url}" target="_blank">${unique[0].name}</a>`;
+  }
+
+  return `<div class="fileList">` + unique.map((f,idx) => 
+    `<a href="${f.url}" target="_blank">📎 ${idx+1}. ${f.name}</a>`
+  ).join("<br>") + `</div>`;
+}
+
+function invoiceFilesCount(item){
+  const files = [];
+  if(Array.isArray(item.files)) files.push(...item.files);
+  if(Array.isArray(item.invoiceFiles)) files.push(...item.invoiceFiles);
+  if((item.fileUrl || item.invoiceUrl) && files.length === 0) files.push({ fileUrl:item.fileUrl || item.invoiceUrl });
+  const urls = new Set(files.map(f => f.fileUrl || f.invoiceUrl || f.url).filter(Boolean));
+  return urls.size || files.length || 0;
+}
+
+function filePreview(d){ const img=(d.mimeType||"").startsWith("image/"); return img?`<a href="${d.fileUrl}" target="_blank"><img class="preview" src="${d.fileUrl}"></a>`:`<a href="${d.fileUrl}" target="_blank">${d.fileName}</a>`; }
+
+
+function updateAuthView(){
+  const logged = !!currentUser;
+
+  const loginRequired = document.getElementById("loginRequired");
+  const appContent = document.getElementById("appContent");
+
+  if(loginRequired) loginRequired.classList.toggle("hidden", logged);
+  if(appContent) appContent.classList.toggle("hidden", !logged);
+
+  if(logged){
+    loginBox.classList.add("hidden");
+    userBox.classList.remove("hidden");
+    activeUser.innerHTML = `Giriş: <b>${currentUser.name}</b> • ${currentUser.role}`;
+  }else{
+    loginBox.classList.remove("hidden");
+    userBox.classList.add("hidden");
+  }
+}
+
+function restoreSession(){
+  try{
+    const saved = localStorage.getItem("lojistikUser");
+    if(saved){
+      currentUser = JSON.parse(saved);
+    }
+  }catch(e){
+    currentUser = null;
+    localStorage.removeItem("lojistikUser");
+  }
+  updateAuthView();
+}
+
+function show(name){
+  if(!currentUser){ updateAuthView(); return; }
+  ["Dashboard","Vehicles","VehicleDocs","Inspection","Maintenance","Km","Invoices","Penalty","Suppliers","Users","Settings"].forEach(nm=>{
+    document.getElementById("page"+nm)?.classList.add("hidden");
+    document.getElementById("tab"+nm)?.classList.remove("active");
+  });
+  document.getElementById("page"+name)?.classList.remove("hidden");
+  document.getElementById("tab"+name)?.classList.add("active");
+  render();
+}
+
+async function load(){
+  try{
+    db = await (await fetch("/api/data")).json();
+    restoreSession();
+    if(currentUser) render();
+  }catch(e){
+    showError(e);
+  }
+}
+function showError(e){ errorBox.classList.remove("hidden"); errorBox.innerHTML="<b>Hata:</b> "+e.message; }
+
+async function login(){
+  try{
+    const d = await api("/api/login", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ username:username.value, password:password.value })
+    });
+
+    currentUser = d.user;
+    localStorage.setItem("lojistikUser", JSON.stringify(currentUser));
+
+    loginBox.classList.add("hidden");
+    userBox.classList.remove("hidden");
+    activeUser.innerHTML = `Giriş: <b>${currentUser.name}</b> • ${currentUser.role}`;
+
+    updateAuthView();
+    render();
+  }catch(e){
+    alert(e.message);
+  }
+}
+function logout(){
+  currentUser = null;
+  localStorage.removeItem("lojistikUser");
+
+  loginBox.classList.remove("hidden");
+  userBox.classList.add("hidden");
+
+  updateAuthView();
+}
+
+
+function platePlaceholderOption(){
+  return '<option value="">🚛 Plaka Seçiniz</option>';
+}
+
+function requireSelectedPlate(selectEl, message){
+  const value = (selectEl && selectEl.value ? selectEl.value.trim() : "");
+  if(!value){
+    alert(message || "Lütfen plaka seçiniz.");
+    if(selectEl) selectEl.focus();
+    return "";
+  }
+  return value;
+}
+
+function fixPlateSelectPlaceholders(){
+  ["logPlate","docPlate","docPlateMain","penaltyPlate","mPlate","supplierPlate"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el || el.tagName !== "SELECT") return;
+
+    const hasEmpty = Array.from(el.options).some(o => o.value === "");
+    if(!hasEmpty){
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "🚛 Plaka Seçiniz";
+      el.insertBefore(opt, el.firstChild);
+    }
+
+    if(!el.dataset.keepSelected && el.selectedIndex === 0){
+      el.value = "";
+    }
+  });
+}
+
+function render(){
+  bindMoneyKmFormatting();
+  setTimeout(fixPlateSelectPlaceholders, 0);
+
+  const selectedInvoicePlate = document.getElementById('invoicePlateFilter')?.value || '';
+
+ try{
+  if(!currentUser){ updateAuthView(); return; }
+  updateAuthView();
+  errorBox.classList.add("hidden");
+  const vehicles=db.vehicles||[], invoices=db.invoices||[], km=db.monthlyKm||[], users=db.users||[], docs=db.vehicleDocuments||[];
+  sVehicles.innerText=vehicles.length;
+  sInspection.innerText=vehicles.filter(v=>daysUntil(v.inspection)<=30).length;
+  sInvoices.innerText=invoices.length;
+  sWaiting.innerText=invoices.filter(i=>!i.yetkili2Approved||(i.yetkili2Approved&&!i.paid)).length;
+  sMaintenanceLate.innerText=vehicles.filter(v=>maintenanceRemaining(v)<0).length;
+  sSrcWarn.innerText=vehicles.filter(psikoExpired).length;
+
+  
+[logPlate,mPlate,docPlate,penaltyPlate,document.getElementById("docPlateMain"),document.getElementById("supplierPlate")].forEach(sel=>{
+  if(!sel) return;
+  const oldVal = sel.value || "";
+  sel.innerHTML = '<option value="">🚛 Plaka Seçiniz</option>' + vehicles.map(v=>`<option value="${v.plate}">${v.plate} - ${v.brand}</option>`).join("");
+  sel.value = vehicles.some(v => v.plate === oldVal) ? oldVal : "";
+});
+
+if(document.getElementById("docPlateFilter")){
+  const oldVal = docPlateFilter.value;
+  docPlateFilter.innerHTML = '<option value="">Tüm Plakalar</option>' + vehicles.map(v=>`<option value="${v.plate}">${v.plate} - ${v.brand}</option>`).join("");
+  docPlateFilter.value = oldVal;
+}
+
+  if(!mMonth.value) mMonth.value=new Date().toISOString().slice(0,7);
+
+  const q=(vehicleSearch?.value||"").toLowerCase();
+
+  if(document.getElementById("operationFilter")){
+    const oldOperation = operationFilter.value;
+    const ops = [...new Set(vehicles.map(v => v.operation).filter(Boolean))].sort();
+    operationFilter.innerHTML = '<option value="">Tüm Operasyonlar</option>' + ops.map(o=>`<option value="${o}">${o}</option>`).join("");
+    operationFilter.value = oldOperation;
+  }
+
+  const selectedOperation = document.getElementById("operationFilter")?.value || "";
+  vehicleCards.innerHTML=vehicles.filter(v=>((v.plate||"")+(v.brand||"")+(v.operation||"")).toLowerCase().includes(q) && (!selectedOperation || v.operation === selectedOperation)).map(v=>`
+    <div class="card vehicleCard" onclick="selectVehicle('${v.plate}')">
+      <h2>${v.plate}</h2><div class="muted">${v.brand}</div><div class="muted">Model Yılı: ${v.modelYear||"-"}</div><div class="muted">Operasyon: ${v.operation||"-"}</div><b>${fmt(v.km)} km</b><br>${maintenanceBadge(v)}<br>${missingWarnings(v)}
+    </div>`).join("")||'<div class="muted">Araç yok.</div>';
+
+  vehicleTable.innerHTML=vehicles.map(v=>`
+    <tr><td><b>${v.plate}</b></td><td>${v.brand}</td><td>${v.modelYear||"-"}</td><td>${v.operation||"-"}</td><td>${v.driverName||"-"}<br><span class="muted">${v.driverPhone||""}</span></td>
+    <td>Maaş: ${fmt(v.salary)} ₺<br>Yemek: ${fmt(v.mealMoney)} ₺<br>Prim: ${fmt(v.premium)} ₺</td><td>${fmt(v.km)} km</td><td>${v.lastAction||"-"}</td><td>${maintenanceBadge(v)}<br>${fmt(maintenanceRemaining(v))} km kaldı</td><td>${v.inspection||"-"}</td>
+    <td><button class="small" onclick="selectVehicle('${v.plate}')">Detay</button>${canManageVehicles()?`<button class="small green" onclick="event.stopPropagation();startVehicleEdit('${v.plate}')">Düzenle</button><button class="small red" onclick="delVehicle('${v.plate}')">Sil</button>`:""}</td></tr>`).join("")||'<tr><td colspan="11">Araç yok</td></tr>';
+
+  const v=selectedPlate?vehicles.find(x=>x.plate===selectedPlate):vehicles[0];
+  if(v){
+    const logs=(db.vehicleLogs||[]).filter(l=>l.plate===v.plate), invs=invoices.filter(i=>i.plate===v.plate), vdocs=docs.filter(d=>d.plate===v.plate&&d.docType!=="Ceza Evrakı"), vkms=km.filter(k=>k.plate===v.plate);
+    vehicleDetail.innerHTML=`
+      <h2>${v.plate}</h2><p>${v.brand}</p><p><b>Model Yılı:</b> ${v.modelYear||"-"}<br><b>Çalıştığı Operasyon:</b> ${v.operation||"-"}</p>
+      <div class="card"><h3>👨‍✈️ Şoför Bilgileri</h3>
+      <b>Şoför:</b> ${v.driverName||"-"}<br><b>Telefon:</b> ${v.driverPhone||"-"}<br><b>Maaş:</b> ${fmt(v.salary)} ₺<br><b>Yemek:</b> ${fmt(v.mealMoney)} ₺<br><b>Prim:</b> ${fmt(v.premium)} ₺<br><b>Psikoteknik Belge:</b> ${v.srcDate||"-"}<br><b>Psikoteknik Bitiş:</b> ${psikoEnd(v)}<br>${psikoExpired(v)?'<span class="badge danger">Psikoteknik uyarısı</span>':'<span class="badge ok">Psikoteknik geçerli</span>'}</div>
+      <div class="grid"><div class="card"><div class="muted">KM</div><div class="stat">${fmt(v.km)}</div></div><div class="card"><div class="muted">Muayene</div><b>${v.inspection||"-"}</b></div></div>
+      <div class="card"><h3>🔧 Bakım Bilgileri</h3><b>Bakım Aralığı:</b> ${fmt(v.maintenanceInterval)} km<br><b>Son Bakım KM:</b> ${fmt(v.lastMaintenanceKm)} km<br><b>Kalan KM:</b> ${fmt(maintenanceRemaining(v))} km<br>${maintenanceBadge(v)}</div>
+      <h3>Aylık KM</h3>${vkms.map(k=>`<div class="card">${k.month}: <b>${fmt(k.doneKm)} km</b></div>`).join("")||"Kayıt yok"}
+      <h3>İşlemler</h3>${logs.map(l=>`<div class="card"><b>${l.text}<br><button class="small" onclick="updateVehicleLog('${l.id}')">Düzenle</button> <button class="small red" onclick="deleteVehicleLog('${l.id}')">Sil</button></b><br><span class="muted">${l.date} / ${fmt(l.km)} km / ${fmt(l.cost)} ₺ / ${l.addedBy}</span>${l.invoiceUrl?`<br>${invoiceFilesHtml(l)} <span class="badge">Dosya: ${invoiceFilesCount(l)}</span>`:""}</div>`).join("")||"Kayıt yok"}
+      <h3>PDF Faturalar</h3>${invs.filter(canSeeInvoice).map(i=>`<div class="card">${invoiceFilesHtml(i)} <span class="badge">Dosya: ${invoiceFilesCount(i)}</span> ${invBadge(i)}</div>`).join("")||"Görebileceğin PDF yok"}
+      <h3>Araç Evrakları</h3>${vdocs.map(d=>`<div class="card"><b>${d.docType}</b> / ${d.docDate||d.date}<br>${filePreview(d)}<br>${d.note||""}${canManageVehicles()?`<br><button class="small red" onclick="deleteVehicleDocument(${d.id})">Sil</button>`:""}</div>`).join("")||"Evrak yok"}`;
+  }
+
+  inspectionTable.innerHTML=vehicles.map(v=>{const d=daysUntil(v.inspection);return `<tr><td>${v.plate}</td><td>${v.brand}</td><td>${v.inspection||"-"}</td><td>${d===999999?"-":d+" gün"}</td><td>${d<=30?'<span class="badge wait">Yaklaşıyor</span>':'<span class="badge ok">Güvende</span>'}</td><td>${canManageVehicles()?`<button class="small green" onclick="inspectionDone('${v.plate}')">Muayene Yaptım</button>`:""}</td></tr>`}).join("");
+  maintenanceTable.innerHTML=vehicles.map(v=>`<tr><td>${v.plate}</td><td>${v.brand}</td><td>${fmt(v.km)} km</td><td>${fmt(v.lastMaintenanceKm)} km</td><td>${fmt(v.maintenanceInterval)} km</td><td>${fmt(maintenanceRemaining(v))} km</td><td>${maintenanceBadge(v)}</td><td>${canManageVehicles()?`<button class="small green" onclick="maintenanceDone('${v.plate}')">Bakım Yapıldı</button>`:""}</td></tr>`).join("");
+
+  kmTable.innerHTML=km.map(k=>`<tr><td>${k.month}</td><td>${k.plate}</td><td>${k.brand}</td><td>${fmt(k.startKm)}</td><td>${fmt(k.endKm)}</td><td><b>${fmt(k.doneKm)}</b></td><td>${k.addedBy}</td><td>${isAdmin()?`<button class="small red" onclick="delKm('${k.plate}','${k.month}')">Sil</button>`:""}</td></tr>`).join("")||'<tr><td colspan="8">Kayıt yok</td></tr>';
+  invoiceTable.innerHTML=invoices.filter(canSeeInvoice).map(i=>`<tr><td>${i.date}</td><td>${i.plate}</td><td>${invoiceFilesHtml(i)}</td><td><span class="badge blue">${i.source||"PDF Fatura"}</span></td><td>${invBadge(i)}</td><td>${i.mailToYetkili2Sent?"Yetkili2 mail gitti":"Yetkili2 mail gitmedi"} ${i.mailToYetkiliSent?"<br>Yetkili mail gitti":""}</td><td>${i.addedBy}</td><td>${canApproveInvoices()&&!i.yetkili2Approved?`<button class="small green" onclick="approveInv(${i.id})">Yetkili2 Onayla</button>`:""}${canPayInvoices()&&i.yetkili2Approved&&!i.paid?`<button class="small green" onclick="markPaid(${i.id})">Ödeme Yapıldı</button>`:""}${canApproveInvoices()?`<button class="small red" onclick="delInv(${i.id})">Sil</button>`:""}</td></tr>`).join("")||'<tr><td colspan="8">Fatura yok</td></tr>';
+
+  
+  const vehicleDocs = docs.filter(d => d.docType !== "Ceza Evrakı");
+  if(document.getElementById("docTotalCount")) docTotalCount.innerText = vehicleDocs.length;
+  if(document.getElementById("docPdfCount")) docPdfCount.innerText = vehicleDocs.filter(d => (d.mimeType||"").includes("pdf")).length;
+  if(document.getElementById("docImageCount")) docImageCount.innerText = vehicleDocs.filter(d => (d.mimeType||"").startsWith("image/")).length;
+  if(document.getElementById("docVehicleCount")) docVehicleCount.innerText = [...new Set(vehicleDocs.map(d=>d.plate))].length;
+
+  if(document.getElementById("vehicleDocsTable")){
+    const dq = (document.getElementById("docSearch")?.value || "").toLowerCase();
+    vehicleDocsTable.innerHTML = vehicleDocs
+      .filter(d => {
+        const plateFilter = document.getElementById("docPlateFilter")?.value || "";
+        const typeFilter = document.getElementById("docTypeFilter")?.value || "";
+        const textMatch = ((d.fileName||"") + (d.note||"")).toLowerCase().includes(dq);
+        const plateMatch = !plateFilter || d.plate === plateFilter;
+        const typeMatch = !typeFilter || d.docType === typeFilter;
+        return textMatch && plateMatch && typeMatch;
+      })
+      .map(d => `
+        <tr>
+          <td>${d.docDate || d.date || "-"}</td>
+          <td><b>${d.plate || "-"}</b></td>
+          <td><span class="badge blue">${d.docType || "Diğer"}</span></td>
+          <td>${filePreview(d)}</td>
+          <td>${d.note || "-"}</td>
+          <td>${d.addedBy || "-"}</td>
+          <td>${canManageVehicles()?`<button class="small red" onclick="deleteVehicleDocument(${d.id})">Sil</button>`:""}</td>
+        </tr>
+      `).join("") || '<tr><td colspan="7">Araç evrakı yok.</td></tr>';
+  }
+
+const penalties=docs.filter(d=>d.docType==="Ceza Evrakı");
+  if(document.getElementById("penaltyPlateListFilter")){
+    const oldPenaltyPlate = penaltyPlateListFilter.value;
+    const penaltyPlates = [...new Set(penalties.map(p => p.plate).filter(Boolean))].sort();
+    penaltyPlateListFilter.innerHTML = '<option value="">Tüm Plakalar</option>' + penaltyPlates.map(p=>`<option value="${p}">${p}</option>`).join("");
+    penaltyPlateListFilter.value = oldPenaltyPlate;
+  }
+  const selectedPenaltyPlate = document.getElementById("penaltyPlateListFilter")?.value || "";
+  const filteredPenalties = penalties.filter(d => !selectedPenaltyPlate || d.plate === selectedPenaltyPlate);
+  penaltyCount.innerText = penalties.length;
+  penaltyTotalAmount.innerText = fmt(penalties.reduce((s,p)=>s+n(p.amount),0)) + " ₺";
+  if(document.getElementById("penaltyFilteredTotalAmount")){
+    penaltyFilteredTotalAmount.innerText = selectedPenaltyPlate
+      ? fmt(filteredPenalties.reduce((s,p)=>s+n(p.amount),0)) + " ₺"
+      : "Plaka seçiniz";
+  }
+  penaltyTable.innerHTML=filteredPenalties.map(d=>`<tr><td>${d.docDate||d.date}</td><td>${d.plate}</td><td>${filePreview(d)}</td><td>${fmt(d.amount)} ₺</td><td>${d.note||"-"}</td><td>${d.addedBy}</td><td>${canManageVehicles()?`<button class="small red" onclick="deleteVehicleDocument(${d.id})">Sil</button>`:""}</td></tr>`).join("")||'<tr><td colspan="7">Ceza yok</td></tr>';
+
+
+  const suppliers = db.suppliers || [];
+  if(document.getElementById("supplierPlateFilter")){
+    const oldSupplierPlate = supplierPlateFilter.value;
+    const supplierPlates = [...new Set(suppliers.map(x => x.plate).filter(Boolean))].sort();
+    supplierPlateFilter.innerHTML = '<option value="">Tüm Plakalar</option>' + supplierPlates.map(p=>`<option value="${p}">${p}</option>`).join("");
+    supplierPlateFilter.value = oldSupplierPlate;
+  }
+  if(document.getElementById("supplierCount")){
+    supplierCount.innerText = suppliers.length;
+    supplierTotalAmount.innerText = fmt(suppliers.reduce((sum,x)=>sum+n(x.amount),0)) + " ₺";
+    const supplierFiles = suppliers.flatMap(x => Array.isArray(x.files) ? x.files : (x.fileUrl ? [{ fileUrl:x.fileUrl, mimeType:x.mimeType }] : []));
+    supplierPdfCount.innerText = supplierFiles.filter(f => (f.mimeType||"").includes("pdf") || String(f.fileName||"").toLowerCase().endsWith(".pdf")).length;
+    supplierImageCount.innerText = supplierFiles.filter(f => (f.mimeType||"").startsWith("image/")).length;
+  }
+  if(document.getElementById("supplierTable")){
+    const sfType = document.getElementById("supplierTypeFilter")?.value || "";
+    const sfPlate = document.getElementById("supplierPlateFilter")?.value || "";
+    const sq = (document.getElementById("supplierSearch")?.value || "").toLowerCase();
+    supplierTable.innerHTML = suppliers
+      .filter(x => {
+        const filesText = (Array.isArray(x.files) ? x.files : []).map(f => f.fileName || "").join(" ");
+        const hay = ((x.supplierName||"") + " " + (x.note||"") + " " + filesText).toLowerCase();
+        return (!sfType || x.processType === sfType) && (!sfPlate || x.plate === sfPlate) && (!sq || hay.includes(sq));
+      })
+      .map(x => `
+        <tr>
+          <td>${x.processDate || x.date || "-"}</td>
+          <td><span class="badge blue">${x.processType || "Diğer"}</span></td>
+          <td>${x.supplierName || "-"}</td>
+          <td>${x.plate || "-"}</td>
+          <td>${invoiceFilesHtml(x)}</td>
+          <td>${fmt(x.amount)} ₺</td>
+          <td>${x.note || "-"}</td>
+          <td>${x.addedBy || "-"}</td>
+          <td>${canManageVehicles()?`<button class="small red" onclick="deleteSupplierRecord(${x.id})">Sil</button>`:""}</td>
+        </tr>
+      `).join("") || '<tr><td colspan="9">Tedarikçi işlemi yok.</td></tr>';
+  }
+
+  usersTable.innerHTML=users.map(u=>`<tr><td>${u.name}</td><td>${u.username}</td><td>${u.mail||""}</td><td>${roleBadge(u.role)}</td><td>${isAdmin()&&u.username!=="admin"?`<button class="small red" onclick="delUser('${u.username}')">Sil</button>`:"Silinemez"}</td></tr>`).join("");
+  notifyMails.value=(db.notifyMails||[]).join(", ");
+ }catch(e){console.error(e); showError(e);}
+}
+
+async function addVehicle(){ if(!canManageVehicles())return alert("Araç ekleme yetkisi yok."); try{let plate=vPlate.value.trim().toUpperCase();let vehicle={plate,brand:vBrand.value.trim(),modelYear:n(vModelYear.value),operation:vOperation.value.trim(),km:n(vKm.value),inspection:vInspection.value,lastAction:"Araç sisteme eklendi",lastActionKm:n(vKm.value),driverName:vDriverName.value,driverPhone:vDriverPhone.value,salary:n(vSalary.value),mealMoney:n(vMealMoney.value),premium:n(vPremium.value),srcDate:vSrcDate.value,maintenanceInterval:n(vMaintenanceInterval.value),lastMaintenanceKm:n(vLastMaintenanceKm.value)};let d=await api("/api/vehicles",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username,vehicle})});db=d.db;render();alert("Araç eklendi.")}catch(e){alert(e.message)}}
+async function delVehicle(p){if(!confirm(p+" silinsin mi?"))return;try{let d=await api("/api/vehicles/"+encodeURIComponent(p)+"?requester="+currentUser.username,{method:"DELETE"});db=d.db;render()}catch(e){alert(e.message)}}
+function selectVehicle(p){selectedPlate=p;show("Vehicles")}
+function startVehicleEdit(p){
+  const v = (db.vehicles || []).find(x => x.plate === p);
+  if(!v) return alert("Araç bulunamadı.");
+
+  selectedPlate = p;
+
+  editVehicleBox.style.display = "block";
+
+  editOldPlate.value = v.plate || "";
+  editPlate.value = v.plate || "";
+  editBrand.value = v.brand || "";
+  if(document.getElementById("editModelYear")) editModelYear.value = v.modelYear || "";
+  if(document.getElementById("editOperation")) editOperation.value = v.operation || "";
+  editKm.value = fmt(v.km || 0);
+  editInspection.value = v.inspection || "";
+  editDriverName.value = v.driverName || "";
+  editDriverPhone.value = v.driverPhone || "";
+  editSalary.value = fmt(v.salary || 0);
+  editMealMoney.value = fmt(v.mealMoney || 0);
+  editPremium.value = fmt(v.premium || 0);
+  editSrcDate.value = v.srcDate || "";
+  editMaintenanceInterval.value = fmt(v.maintenanceInterval || 0);
+  editLastMaintenanceKm.value = fmt(v.lastMaintenanceKm || 0);
+
+  // Render sonrası kutu kapanmasın diye tekrar aç ve kaydır.
+  setTimeout(() => {
+    editVehicleBox.style.display = "block";
+    editVehicleBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    editPlate.focus();
+  }, 150);
+}
+async function saveVehicleEdit(){try{let body={requester:currentUser.username,plate:editPlate.value.trim().toUpperCase(),brand:editBrand.value,modelYear:n(editModelYear.value),operation:editOperation.value.trim(),km:n(editKm.value),inspection:editInspection.value,driverName:editDriverName.value,driverPhone:editDriverPhone.value,salary:n(editSalary.value),mealMoney:n(editMealMoney.value),premium:n(editPremium.value),srcDate:editSrcDate.value,maintenanceInterval:n(editMaintenanceInterval.value),lastMaintenanceKm:n(editLastMaintenanceKm.value)};let d=await api("/api/vehicles/"+encodeURIComponent(editOldPlate.value),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});db=d.db;editVehicleBox.style.display="none";render()}catch(e){alert(e.message)}}
+async function addLog(){
+  const selectedPlate_logPlate = requireSelectedPlate(logPlate, "Bakım / işlem kaydı için lütfen plaka seçiniz.");
+  if(!selectedPlate_logPlate) return;
+
+  if(!currentUser) return alert("Giriş gerekli.");
+
+  const files = Array.from(logPdf.files || []);
+  if(files.length === 0) return alert("Fatura dosyası zorunlu.");
+
+  const type = logType.value;
+  const detail = logText.value.trim();
+  if(!detail) return alert("Ne yapıldı kısmını doldur.");
+
+  const kmValue = n(logKm.value);
+  const costValue = n(logCost.value);
+
+  if(!kmValue || kmValue <= 0) return alert("KM zorunludur.");
+  if(!costValue || costValue <= 0) return alert("Tutar zorunludur.");
+
+
+  const form = new FormData();
+  form.append("requester", currentUser.username);
+  form.append("plate", selectedPlate_logPlate);
+  form.append("maintenanceType", type);
+  form.append("text", type + " - " + detail);
+  form.append("km", kmValue);
+  form.append("cost", costValue);
+
+  files.forEach(f => form.append("files", f));
+
+  try{
+    const res = await fetch("/api/logs", { method:"POST", body:form });
+    const d = await safeFetchJsonFromResponse(res);
+    db = d.db;
+    logPdf.value = "";
+    logText.value = "";
+    logPlate.value = "";
+    render();
+    alert("Fatura dosyaları eklendi ve adminlere mail gönderildi.");
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+async function uploadVehicleDocumentFromDocsPage(){
+  const selectedPlate_docPlateMain = requireSelectedPlate(docPlateMain, "Araç evrakı için lütfen plaka seçiniz.");
+  if(!selectedPlate_docPlateMain) return;
+
+  if(!currentUser) return alert("Giriş gerekli.");
+
+  const files = Array.from(docFileMain.files || []);
+  if(files.length === 0) return alert("Dosya seç.");
+
+  try{
+    for(const f of files){
+      const form = new FormData();
+      form.append("requester", currentUser.username);
+      form.append("plate", selectedPlate_docPlateMain);
+      form.append("docType", docTypeMain.value);
+      form.append("docDate", docDateMain.value);
+      form.append("note", docNoteMain.value);
+      form.append("file", f);
+
+      const res = await fetch("/api/vehicle-documents", { method:"POST", body:form });
+      const d = await safeFetchJsonFromResponse(res);
+      db = d.db;
+    }
+
+    docFileMain.value = "";
+    docNoteMain.value = "";
+    docPlateMain.value = "";
+    render();
+    alert("Evrak eklendi.");
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+async function uploadVehicleDocument(){const selectedPlate_docPlate=requireSelectedPlate(docPlate,"Araç evrakı için lütfen plaka seçiniz.");if(!selectedPlate_docPlate)return;const f=docFile.files[0];if(!f)return alert("Dosya seç.");const form=new FormData();form.append("requester",currentUser.username);form.append("plate",selectedPlate_docPlate);form.append("docType",docType.value);form.append("docDate",docDate.value);form.append("note",docNote.value);form.append("file",f);try{const res=await fetch("/api/vehicle-documents",{method:"POST",body:form});const d=await parseJsonResponse(res);if(!d.ok)throw new Error(d.message);db=d.db;docPlate.value="";docFile.value="";docNote.value="";render()}catch(e){alert(e.message)}}
+async function uploadPenalty(){const selectedPlate_penaltyPlate=requireSelectedPlate(penaltyPlate,"Ceza takibi için lütfen plaka seçiniz.");if(!selectedPlate_penaltyPlate)return;const f=penaltyFile.files[0];if(!f)return alert("Dosya seç.");const form=new FormData();form.append("requester",currentUser.username);form.append("plate",selectedPlate_penaltyPlate);form.append("docType","Ceza Evrakı");form.append("docDate",penaltyDate.value);form.append("amount",n(penaltyAmount.value));form.append("note",penaltyNote.value);form.append("file",f);try{const res=await fetch("/api/vehicle-documents",{method:"POST",body:form});const d=await parseJsonResponse(res);if(!d.ok)throw new Error(d.message);db=d.db;penaltyPlate.value="";penaltyFile.value="";penaltyAmount.value="";penaltyNote.value="";render()}catch(e){alert(e.message)}}
+async function addSupplierRecord(){
+  if(!currentUser) return alert("Giriş gerekli.");
+  const selectedPlate_supplierPlate = requireSelectedPlate(supplierPlate, "Tedarikçi işlemi için lütfen plaka seçiniz.");
+  if(!selectedPlate_supplierPlate) return;
+  const files = Array.from(supplierFiles.files || []);
+  if(files.length === 0) return alert("Fatura veya fotoğraf seç.");
+
+  const form = new FormData();
+  form.append("requester", currentUser.username);
+  form.append("processType", supplierProcessType.value);
+  form.append("supplierName", supplierName.value);
+  form.append("plate", selectedPlate_supplierPlate);
+  form.append("processDate", supplierDate.value);
+  form.append("amount", n(supplierAmount.value));
+  form.append("note", supplierNote.value);
+  files.forEach(f => form.append("files", f));
+
+  try{
+    const res = await fetch("/api/suppliers", { method:"POST", body:form });
+    const d = await safeFetchJsonFromResponse(res);
+    db = d.db;
+    supplierFiles.value = "";
+    supplierNote.value = "";
+    supplierName.value = "";
+    supplierAmount.value = "";
+    supplierPlate.value = "";
+    render();
+    alert("Tedarikçi işlemi eklendi.");
+  }catch(e){ alert(e.message); }
+}
+
+async function deleteSupplierRecord(id){
+  if(!confirm("Bu tedarikçi kaydı silinsin mi?")) return;
+  try{
+    const d = await api("/api/suppliers/" + id + "?requester=" + currentUser.username, { method:"DELETE" });
+    db = d.db;
+    render();
+  }catch(e){ alert(e.message); }
+}
+
+async function deleteVehicleDocument(id){try{let d=await api("/api/vehicle-documents/"+id+"?requester="+currentUser.username,{method:"DELETE"});db=d.db;render()}catch(e){alert(e.message)}}
+async function inspectionDone(p){try{let d=await api("/api/vehicles/"+encodeURIComponent(p)+"/inspection-done",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username})});db=d.db;render()}catch(e){alert(e.message)}}
+async function maintenanceDone(p){const v=db.vehicles.find(x=>x.plate===p);if(!v)return;try{let d=await api("/api/vehicles/"+encodeURIComponent(p),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username,plate:v.plate,brand:v.brand,modelYear:v.modelYear||0,operation:v.operation||"",km:v.km,inspection:v.inspection,driverName:v.driverName||"",driverPhone:v.driverPhone||"",salary:v.salary||0,mealMoney:v.mealMoney||0,premium:v.premium||0,srcDate:v.srcDate||"",maintenanceInterval:v.maintenanceInterval||0,lastMaintenanceKm:v.km})});db=d.db;render()}catch(e){alert(e.message)}}
+async function addMonthlyKm(){const selectedPlate_mPlate=requireSelectedPlate(mPlate,"Aylık KM için lütfen plaka seçiniz.");if(!selectedPlate_mPlate)return;try{let d=await api("/api/monthly-km",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username,record:{plate:selectedPlate_mPlate,month:mMonth.value,startKm:n(mStart.value),endKm:n(mEnd.value)}})});db=d.db;mPlate.value="";mStart.value="";mEnd.value="";render()}catch(e){alert(e.message)}}
+async function delKm(p,m){
+  if(!isAdmin()) return alert("Aylık KM silme işlemi için admin yetkisi gerekir.");
+  if(!confirm(`${p} plakalı aracın ${m} ayına ait KM kaydı silinsin mi?`)) return;
+
+  try{
+    let d = await api(`/api/monthly-km?requester=${currentUser.username}&plate=${encodeURIComponent(p)}&month=${encodeURIComponent(m)}`, { method:"DELETE" });
+    db = d.db;
+    render();
+    alert("Aylık KM kaydı silindi.");
+  }catch(e){
+    alert(e.message);
+  }
+}
+async function addUser(){try{let user={name:uName.value,username:uUsername.value,password:uPass.value,mail:uMail.value,role:uRole.value};let d=await api("/api/users",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username,user})});db=d.db;render()}catch(e){alert(e.message)}}
+async function delUser(u){try{let d=await api("/api/users/"+u+"?requester="+currentUser.username,{method:"DELETE"});db=d.db;render()}catch(e){alert(e.message)}}
+async function approveInv(id){try{let d=await api("/api/invoices/"+id+"/yetkili2-approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username})});db=d.db;render();alert(d.message)}catch(e){alert(e.message)}}
+async function markPaid(id){try{let d=await api("/api/invoices/"+id+"/paid",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username})});db=d.db;render();alert(d.message)}catch(e){alert(e.message)}}
+async function delInv(id){try{let d=await api("/api/invoices/"+id+"?requester="+currentUser.username,{method:"DELETE"});db=d.db;render()}catch(e){alert(e.message)}}
+async function saveMails(){try{let mails=notifyMails.value.split(",").map(x=>x.trim()).filter(Boolean);let d=await api("/api/settings/notify-mails",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({requester:currentUser.username,notifyMails:mails})});db=d.db;render()}catch(e){alert(e.message)}}
+async function resetDemoData(){if(!confirm("Demo veriler geri yüklensin mi?"))return;try{let d=await api("/api/reset-demo-data",{method:"POST"});db=d.db;render()}catch(e){alert(e.message)}}
+function exportAllVehiclesXlsx(){window.location.href="/api/monthly-km/export-xlsx"}
+function exportPenaltiesXlsx(){window.location.href="/api/penalties/export-xlsx"}
+function exportAll(){let rows=[["Ay","Plaka","Araç","Ay Başı","Ay Sonu","Yapılan","Ekleyen"]];(db.monthlyKm||[]).forEach(k=>rows.push([k.month,k.plate,k.brand,k.startKm,k.endKm,k.doneKm,k.addedBy]));let csv="\ufeff"+rows.map(r=>r.map(x=>'"'+String(x??"").replace(/"/g,'""')+'"').join(";")).join("\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="tum_km.csv";a.click()}
+
+async function updateVehicleLog(id){
+  if(!currentUser) return alert("Giriş gerekli.");
+  const log = (db.vehicleLogs || []).find(x => String(x.id) === String(id));
+  if(!log) return alert("İşlem bulunamadı.");
+
+  const newText = prompt("İşlem açıklaması:", log.text || "");
+  if(newText === null) return;
+
+  const newKm = prompt("KM:", fmt(log.km || 0));
+  if(newKm === null) return;
+
+  const newCost = prompt("Tutar:", fmt(log.cost || 0));
+  if(newCost === null) return;
+
+  try{
+    const d = await api(`/api/logs/${id}`, {
+      method:"PUT",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        requester: currentUser.username,
+        text: newText,
+        km: n(newKm),
+        cost: n(newCost)
+      })
+    });
+    db = d.db;
+    render();
+    alert("İşlem güncellendi.");
+  }catch(e){ alert(e.message); }
+}
+
+async function deleteVehicleLog(id){
+  if(!currentUser) return alert("Giriş gerekli.");
+  if(!confirm("Bu işlem kaydı silinsin mi?")) return;
+
+  try{
+    const d = await api(`/api/logs/${id}?requester=${encodeURIComponent(currentUser.username)}`, { method:"DELETE" });
+    db = d.db;
+    render();
+    alert("İşlem silindi.");
+  }catch(e){ alert(e.message); }
+}
+
+async function changeInvoicePlate(id){
+  if(!currentUser) return alert("Giriş gerekli.");
+  const inv = (db.invoices || []).find(x => String(x.id) === String(id));
+  if(!inv) return alert("Fatura bulunamadı.");
+
+  const newPlate = prompt("Yeni plaka:", inv.plate || "");
+  if(newPlate === null) return;
+  if(!newPlate.trim()) return alert("Plaka boş olamaz.");
+
+  try{
+    const d = await api(`/api/invoices/${id}/plate`, {
+      method:"PUT",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ requester: currentUser.username, plate: newPlate.trim().toUpperCase() })
+    });
+    db = d.db;
+    render();
+    alert("Fatura plakası değiştirildi.");
+  }catch(e){ alert(e.message); }
+}
+
+load();
+</script>
+
+
+
+</body>
+</html>

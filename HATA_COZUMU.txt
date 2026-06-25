@@ -1,0 +1,12 @@
+Cannot find module './mailer' hatasi node_modules/nodemailer paketinin bozuk/eksik acilmasindan olur.
+Bu pakette node_modules klasoru bilerek temizlendi.
+
+Calistirma:
+1) Klasore gir.
+2) BASLAT.bat dosyasini calistir.
+3) BASLAT.bat node_modules klasorunu siler, npm install ile temiz kurar ve siteyi baslatir.
+
+Manuel yapmak istersen:
+rmdir /s /q node_modules
+npm install
+npm start
