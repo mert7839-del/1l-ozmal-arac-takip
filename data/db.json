@@ -101,10 +101,10 @@
     {
       "plate": "34 EEM 135",
       "brand": "MERCEDES ATEGO",
-      "km": 726788,
+      "km": 734500,
       "inspection": "2026-06-02",
-      "lastAction": "Diğer - Krank damperi değişimi",
-      "lastActionKm": 495000,
+      "lastAction": "Klima - Bakım ve onarum",
+      "lastActionKm": 734500,
       "driverName": "Ökkeş Yıldızgil",
       "driverPhone": "",
       "salary": 0,
@@ -112,17 +112,17 @@
       "premium": 0,
       "srcDate": "",
       "maintenanceInterval": 15000,
-      "lastMaintenanceKm": 705000,
+      "lastMaintenanceKm": 734500,
       "modelYear": 0,
       "operation": "Domino's Gaziantep"
     },
     {
       "plate": "41 UA 842",
       "brand": "MITSUBISHI",
-      "km": 744650,
+      "km": 746500,
       "inspection": "2026-06-03",
-      "lastAction": "Araç sisteme eklendi",
-      "lastActionKm": 0,
+      "lastAction": "Kasa - 1 Adet Yük Tutucu direk",
+      "lastActionKm": 746500,
       "driverName": "Abdurrahman Toptaş",
       "driverPhone": "",
       "salary": 0,
@@ -511,9 +511,87 @@
       "srcDate": "",
       "maintenanceInterval": 0,
       "lastMaintenanceKm": 0
+    },
+    {
+      "plate": "34 FAC 744",
+      "brand": "Kiralık / Tır",
+      "modelYear": 0,
+      "operation": "Domino's",
+      "km": 300,
+      "inspection": "",
+      "lastAction": "Kasa - Delikli Sac",
+      "lastActionKm": 300,
+      "driverName": "",
+      "driverPhone": "",
+      "salary": 0,
+      "mealMoney": 0,
+      "premium": 0,
+      "srcDate": "",
+      "maintenanceInterval": 0,
+      "lastMaintenanceKm": 0
+    },
+    {
+      "plate": "SERCEN BILIŞIM",
+      "brand": "Arvento",
+      "modelYear": 0,
+      "operation": "Domino's",
+      "km": 0,
+      "inspection": "",
+      "lastAction": "Araç sisteme eklendi",
+      "lastActionKm": 0,
+      "driverName": "",
+      "driverPhone": "",
+      "salary": 0,
+      "mealMoney": 0,
+      "premium": 0,
+      "srcDate": "",
+      "maintenanceInterval": 0,
+      "lastMaintenanceKm": 0
+    },
+    {
+      "plate": "34 FDY 435",
+      "brand": "Fırat Güçlü",
+      "modelYear": 0,
+      "operation": "ÖZMAL",
+      "km": 90000,
+      "inspection": "",
+      "lastAction": "Kasa - Rutin Bakım",
+      "lastActionKm": 90000,
+      "driverName": "",
+      "driverPhone": "",
+      "salary": 0,
+      "mealMoney": 0,
+      "premium": 0,
+      "srcDate": "",
+      "maintenanceInterval": 0,
+      "lastMaintenanceKm": 90000
     }
   ],
   "vehicleLogs": [
+    {
+      "plate": "34 FDY 435",
+      "date": "25.06.2026",
+      "km": 0,
+      "text": "Araç sisteme eklendi",
+      "cost": 0,
+      "addedBy": "Emre Şişman"
+    },
+    {
+      "plate": "SERCEN BILIŞIM",
+      "date": "25.06.2026",
+      "km": 0,
+      "text": "Araç sisteme eklendi",
+      "cost": 0,
+      "addedBy": "Emre Şişman"
+    },
+    {
+      "plate": "34 FAC 744",
+      "date": "25.06.2026",
+      "km": 0,
+      "text": "Araç sisteme eklendi",
+      "cost": 0,
+      "addedBy": "Emre Şişman"
+    },
     {
       "id": 1780565170049,
       "plate": "34 ELY 278",
@@ -696,6 +774,138 @@
           "fileName": "had 343 bakÄ±m.jpeg",
           "fileUrl": "/uploads/1782375388583_had_343_bak__m.jpeg",
           "path": "/root/1l-ozmal-arac-takip/uploads/1782375388583_had_343_bak__m.jpeg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    },
+    {
+      "id": 1782386653621,
+      "plate": "41 UA 842",
+      "type": "Kasa",
+      "text": "Kasa - 1 Adet Yük Tutucu direk",
+      "km": 746500,
+      "cost": 2040,
+      "date": "25.06.2026",
+      "user": "Emre Şişman",
+      "username": "emre",
+      "invoiceName": "2026.06.15 Arda Hidrolik.pdf",
+      "invoiceUrl": "/uploads/1782386653611_2026.06.15_Arda_Hidrolik.pdf",
+      "invoiceFiles": [
+        {
+          "fileName": "2026.06.15 Arda Hidrolik.pdf",
+          "fileUrl": "/uploads/1782386653611_2026.06.15_Arda_Hidrolik.pdf",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782386653611_2026.06.15_Arda_Hidrolik.pdf",
+          "mimeType": "application/pdf"
+        }
+      ]
+    },
+    {
+      "id": 1782388365262,
+      "plate": "34 EEM 135",
+      "type": "Klima",
+      "text": "Klima - Kaçak Testi ve Gaz basımı",
+      "km": 734000,
+      "cost": 8472,
+      "date": "25.06.2026",
+      "user": "Emre Şişman",
+      "username": "emre",
+      "invoiceName": "DNS2026000000104 - 1770769666 - BÄ°R_LOJÄ°STÄ°K_HÄ°ZMETLER_TÄ°CARE.pdf",
+      "invoiceUrl": "/uploads/1782388365250_DNS2026000000104_-_1770769666_-_B__R_LOJ__ST__K_H__ZMETLER_T__CARE.pdf",
+      "invoiceFiles": [
+        {
+          "fileName": "DNS2026000000104 - 1770769666 - BÄ°R_LOJÄ°STÄ°K_HÄ°ZMETLER_TÄ°CARE.pdf",
+          "fileUrl": "/uploads/1782388365250_DNS2026000000104_-_1770769666_-_B__R_LOJ__ST__K_H__ZMETLER_T__CARE.pdf",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782388365250_DNS2026000000104_-_1770769666_-_B__R_LOJ__ST__K_H__ZMETLER_T__CARE.pdf",
+          "mimeType": "application/pdf"
+        }
+      ]
+    },
+    {
+      "id": 1782388465368,
+      "plate": "34 EEM 135",
+      "type": "Klima",
+      "text": "Klima - Bakım ve onarum",
+      "km": 734500,
+      "cost": 22440,
+      "date": "25.06.2026",
+      "user": "Emre Şişman",
+      "username": "emre",
+      "invoiceName": "BÄ°R LOJÄ°STÄ°K.pdf",
+      "invoiceUrl": "/uploads/1782388465325_B__R_LOJ__ST__K.pdf",
+      "invoiceFiles": [
+        {
+          "fileName": "BÄ°R LOJÄ°STÄ°K.pdf",
+          "fileUrl": "/uploads/1782388465325_B__R_LOJ__ST__K.pdf",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782388465325_B__R_LOJ__ST__K.pdf",
+          "mimeType": "application/pdf"
+        }
+      ]
+    },
+    {
+      "id": 1782389558728,
+      "plate": "34 FAC 744",
+      "type": "Kasa",
+      "text": "Kasa - Dorse Elektrik Tesisatı",
+      "km": 200,
+      "cost": 900,
+      "date": "25.06.2026",
+      "user": "Emre Şişman",
+      "username": "emre",
+      "invoiceName": "WhatsApp Image 2026-06-23 at 15.27.32 (1).jpeg",
+      "invoiceUrl": "/uploads/1782389558715_WhatsApp_Image_2026-06-23_at_15.27.32__1_.jpeg",
+      "invoiceFiles": [
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (1).jpeg",
+          "fileUrl": "/uploads/1782389558715_WhatsApp_Image_2026-06-23_at_15.27.32__1_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389558715_WhatsApp_Image_2026-06-23_at_15.27.32__1_.jpeg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    },
+    {
+      "id": 1782389628061,
+      "plate": "34 FAC 744",
+      "type": "Kasa",
+      "text": "Kasa - Delikli Sac",
+      "km": 300,
+      "cost": 7200,
+      "date": "25.06.2026",
+      "user": "Emre Şişman",
+      "username": "emre",
+      "invoiceName": "WhatsApp Image 2026-06-23 at 15.27.32 (3).jpeg",
+      "invoiceUrl": "/uploads/1782389628054_WhatsApp_Image_2026-06-23_at_15.27.32__3_.jpeg",
+      "invoiceFiles": [
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (3).jpeg",
+          "fileUrl": "/uploads/1782389628054_WhatsApp_Image_2026-06-23_at_15.27.32__3_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389628054_WhatsApp_Image_2026-06-23_at_15.27.32__3_.jpeg",
+          "mimeType": "image/jpeg"
+        }
+      ]
+    },
+    {
+      "id": 1782389889195,
+      "plate": "34 FDY 435",
+      "type": "Kasa",
+      "text": "Kasa - Rutin Bakım",
+      "km": 90000,
+      "cost": 18750,
+      "date": "25.06.2026",
+      "user": "Emre Şişman",
+      "username": "emre",
+      "invoiceName": "WhatsApp Image 2026-06-23 at 15.27.32 (6).jpeg",
+      "invoiceUrl": "/uploads/1782389889189_WhatsApp_Image_2026-06-23_at_15.27.32__6_.jpeg",
+      "invoiceFiles": [
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (6).jpeg",
+          "fileUrl": "/uploads/1782389889189_WhatsApp_Image_2026-06-23_at_15.27.32__6_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389889189_WhatsApp_Image_2026-06-23_at_15.27.32__6_.jpeg",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (5).jpeg",
+          "fileUrl": "/uploads/1782389889191_WhatsApp_Image_2026-06-23_at_15.27.32__5_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389889191_WhatsApp_Image_2026-06-23_at_15.27.32__5_.jpeg",
           "mimeType": "image/jpeg"
         }
       ]
@@ -923,6 +1133,144 @@
       ],
       "addedBy": "Mert Yüksel",
       "addedByUsername": "admin"
+    },
+    {
+      "id": 1782386653692,
+      "plate": "41 UA 842",
+      "date": "25.06.2026",
+      "amount": 2040,
+      "km": 746500,
+      "status": "Onay Bekliyor",
+      "source": "Bakım / İşlem Kaydı",
+      "description": "Kasa - 1 Adet Yük Tutucu direk",
+      "fileName": "2026.06.15 Arda Hidrolik.pdf",
+      "fileUrl": "/uploads/1782386653611_2026.06.15_Arda_Hidrolik.pdf",
+      "files": [
+        {
+          "fileName": "2026.06.15 Arda Hidrolik.pdf",
+          "fileUrl": "/uploads/1782386653611_2026.06.15_Arda_Hidrolik.pdf",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782386653611_2026.06.15_Arda_Hidrolik.pdf",
+          "mimeType": "application/pdf"
+        }
+      ],
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre"
+    },
+    {
+      "id": 1782388365263,
+      "plate": "34 EEM 135",
+      "date": "25.06.2026",
+      "amount": 8472,
+      "km": 734000,
+      "status": "Onay Bekliyor",
+      "source": "Bakım / İşlem Kaydı",
+      "description": "Klima - Kaçak Testi ve Gaz basımı",
+      "fileName": "DNS2026000000104 - 1770769666 - BÄ°R_LOJÄ°STÄ°K_HÄ°ZMETLER_TÄ°CARE.pdf",
+      "fileUrl": "/uploads/1782388365250_DNS2026000000104_-_1770769666_-_B__R_LOJ__ST__K_H__ZMETLER_T__CARE.pdf",
+      "files": [
+        {
+          "fileName": "DNS2026000000104 - 1770769666 - BÄ°R_LOJÄ°STÄ°K_HÄ°ZMETLER_TÄ°CARE.pdf",
+          "fileUrl": "/uploads/1782388365250_DNS2026000000104_-_1770769666_-_B__R_LOJ__ST__K_H__ZMETLER_T__CARE.pdf",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782388365250_DNS2026000000104_-_1770769666_-_B__R_LOJ__ST__K_H__ZMETLER_T__CARE.pdf",
+          "mimeType": "application/pdf"
+        }
+      ],
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre"
+    },
+    {
+      "id": 1782388465369,
+      "plate": "34 EEM 135",
+      "date": "25.06.2026",
+      "amount": 22440,
+      "km": 734500,
+      "status": "Onay Bekliyor",
+      "source": "Bakım / İşlem Kaydı",
+      "description": "Klima - Bakım ve onarum",
+      "fileName": "BÄ°R LOJÄ°STÄ°K.pdf",
+      "fileUrl": "/uploads/1782388465325_B__R_LOJ__ST__K.pdf",
+      "files": [
+        {
+          "fileName": "BÄ°R LOJÄ°STÄ°K.pdf",
+          "fileUrl": "/uploads/1782388465325_B__R_LOJ__ST__K.pdf",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782388465325_B__R_LOJ__ST__K.pdf",
+          "mimeType": "application/pdf"
+        }
+      ],
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre"
+    },
+    {
+      "id": 1782389558729,
+      "plate": "34 FAC 744",
+      "date": "25.06.2026",
+      "amount": 900,
+      "km": 200,
+      "status": "Onay Bekliyor",
+      "source": "Bakım / İşlem Kaydı",
+      "description": "Kasa - Dorse Elektrik Tesisatı",
+      "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (1).jpeg",
+      "fileUrl": "/uploads/1782389558715_WhatsApp_Image_2026-06-23_at_15.27.32__1_.jpeg",
+      "files": [
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (1).jpeg",
+          "fileUrl": "/uploads/1782389558715_WhatsApp_Image_2026-06-23_at_15.27.32__1_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389558715_WhatsApp_Image_2026-06-23_at_15.27.32__1_.jpeg",
+          "mimeType": "image/jpeg"
+        }
+      ],
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre"
+    },
+    {
+      "id": 1782389628062,
+      "plate": "34 FAC 744",
+      "date": "25.06.2026",
+      "amount": 7200,
+      "km": 300,
+      "status": "Onay Bekliyor",
+      "source": "Bakım / İşlem Kaydı",
+      "description": "Kasa - Delikli Sac",
+      "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (3).jpeg",
+      "fileUrl": "/uploads/1782389628054_WhatsApp_Image_2026-06-23_at_15.27.32__3_.jpeg",
+      "files": [
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (3).jpeg",
+          "fileUrl": "/uploads/1782389628054_WhatsApp_Image_2026-06-23_at_15.27.32__3_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389628054_WhatsApp_Image_2026-06-23_at_15.27.32__3_.jpeg",
+          "mimeType": "image/jpeg"
+        }
+      ],
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre"
+    },
+    {
+      "id": 1782389889197,
+      "plate": "34 FDY 435",
+      "date": "25.06.2026",
+      "amount": 18750,
+      "km": 90000,
+      "status": "Onay Bekliyor",
+      "source": "Bakım / İşlem Kaydı",
+      "description": "Kasa - Rutin Bakım",
+      "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (6).jpeg",
+      "fileUrl": "/uploads/1782389889189_WhatsApp_Image_2026-06-23_at_15.27.32__6_.jpeg",
+      "files": [
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (6).jpeg",
+          "fileUrl": "/uploads/1782389889189_WhatsApp_Image_2026-06-23_at_15.27.32__6_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389889189_WhatsApp_Image_2026-06-23_at_15.27.32__6_.jpeg",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (5).jpeg",
+          "fileUrl": "/uploads/1782389889191_WhatsApp_Image_2026-06-23_at_15.27.32__5_.jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389889191_WhatsApp_Image_2026-06-23_at_15.27.32__5_.jpeg",
+          "mimeType": "image/jpeg"
+        }
+      ],
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre"
     }
   ],
   "monthlyKm": [
@@ -1136,8 +1484,78 @@
       "addedBy": "Mert Yüksel",
       "addedByUsername": "admin",
       "createdAt": "2026-06-25T10:41:01.998Z"
+    },
+    {
+      "id": 1782387214983,
+      "plate": "34 GJD 550",
+      "docType": "Ceza Evrakı",
+      "docDate": "2026-06-18",
+      "date": "2026-06-18",
+      "amount": 2500,
+      "note": "Kırmızı ışık",
+      "fileName": "34 GJD 550 TRAFÄ°K CAZASI (23.06.2026).pdf",
+      "fileUrl": "/uploads/1782387214970_34_GJD_550_TRAF__K_CAZASI__23.06.2026_.pdf",
+      "mimeType": "application/pdf",
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre",
+      "createdAt": "2026-06-25T11:33:34.983Z"
+    },
+    {
+      "id": 1782388059173,
+      "plate": "41 TS 277",
+      "docType": "Ceza Evrakı",
+      "docDate": "2026-06-18",
+      "date": "2026-06-18",
+      "amount": 1246,
+      "note": "Yerleşim yeri park (sürücüden kesildi)",
+      "fileName": "41 TS 277 TRAFÄ°K CAZASI (24.06.2026).pdf",
+      "fileUrl": "/uploads/1782388059123_41_TS_277_TRAF__K_CAZASI__24.06.2026_.pdf",
+      "mimeType": "application/pdf",
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre",
+      "createdAt": "2026-06-25T11:47:39.173Z"
+    },
+    {
+      "id": 1782388118508,
+      "plate": "41 TS 277",
+      "docType": "Ceza Evrakı",
+      "docDate": "2026-06-04",
+      "date": "2026-06-04",
+      "amount": 1246,
+      "note": "Mağaza Park Cezası",
+      "fileName": "41 TS 277 TRAFÄ°K CAZASI (24.06.2026)-2.pdf",
+      "fileUrl": "/uploads/1782388118498_41_TS_277_TRAF__K_CAZASI__24.06.2026_-2.pdf",
+      "mimeType": "application/pdf",
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre",
+      "createdAt": "2026-06-25T11:48:38.508Z"
     }
   ],
   "notifyMails": [],
-  "suppliers": []
+  "suppliers": [
+    {
+      "id": 1782389725935,
+      "processType": "Kasa",
+      "supplierName": "Arvento",
+      "plate": "SERCEN BILIŞIM",
+      "amount": 0,
+      "note": "Cİhaz tamiri",
+      "processDate": "25.06.2026",
+      "date": "25.06.2026",
+      "files": [
+        {
+          "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (4).jpeg",
+          "fileUrl": "/uploads/1782389725924_WhatsApp_Image_2026-06-23_at_15.27.32__4_.jpeg",
+          "mimeType": "image/jpeg",
+          "path": "/root/1l-ozmal-arac-takip/uploads/1782389725924_WhatsApp_Image_2026-06-23_at_15.27.32__4_.jpeg"
+        }
+      ],
+      "fileName": "WhatsApp Image 2026-06-23 at 15.27.32 (4).jpeg",
+      "fileUrl": "/uploads/1782389725924_WhatsApp_Image_2026-06-23_at_15.27.32__4_.jpeg",
+      "mimeType": "image/jpeg",
+      "addedBy": "Emre Şişman",
+      "addedByUsername": "emre",
+      "createdAt": "2026-06-25T12:15:25.935Z"
+    }
+  ]
 }

@@ -75,10 +75,42 @@
 
 .fileList a{display:inline-block;margin:2px 0;color:#67e8f9;font-weight:800}
 .fileList{line-height:1.55}
+    .kmGauge{background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(15,23,42,.95));border:1px solid #22d3ee;border-radius:18px;padding:16px;margin:8px 0 12px;box-shadow:0 10px 26px #0003}
+    .kmGaugeValue{font-size:34px;font-weight:900;color:#67e8f9;margin-top:4px}
 </style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<style>
+  #toastBox{position:fixed;top:18px;right:18px;z-index:99999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+  .toast-msg{min-width:240px;max-width:420px;background:#0f172a;color:#fff;border-left:5px solid #22c55e;box-shadow:0 12px 30px rgba(0,0,0,.22);border-radius:12px;padding:13px 15px;font-weight:700;letter-spacing:.2px;opacity:0;transform:translateX(18px);transition:.25s ease}
+  .toast-msg.show{opacity:1;transform:translateX(0)}
+  .toast-msg.err{border-left-color:#ef4444}
+</style>
 </head>
 <body>
+<div id="toastBox"></div>
+<script>
+(function(){
+  const nativeAlert = window.alert.bind(window);
+  window.showToast = function(message, type){
+    try{
+      const box = document.getElementById('toastBox');
+      if(!box) return nativeAlert(message);
+      const el = document.createElement('div');
+      el.className = 'toast-msg' + (type === 'error' ? ' err' : '');
+      el.textContent = message || 'İşlem tamamlandı.';
+      box.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('show'));
+      setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3200);
+    }catch(e){ nativeAlert(message); }
+  };
+  window.alert = function(message){
+    const msg = String(message || '');
+    window.showToast(msg, /hata|error|yetki|zorunlu|bulunamad|seç|gerekli|boş|silinsin/i.test(msg) ? 'error' : 'success');
+  };
+})();
+</script>
+
 <header>
   <div>
     <h1>🚛 1L Özmal Araç Takip Sistemi</h1>
@@ -151,9 +183,14 @@
 
       <div class="card">
         <h2>Bakım / İşlem Kaydı</h2>
-        <select id="logPlate">
+        <select id="logPlate" onchange="updateLogVehicleKmGauge()">
 <option value="">🚛 Plaka Seçiniz</option>
 </select>
+        <div id="logVehicleKmGauge" class="kmGauge hidden">
+          <div class="muted">Seçili aracın anlık KM'si</div>
+          <div class="kmGaugeValue">-</div>
+          <div class="muted" style="margin-top:8px">Son KM Güncelleme Tarihi: <b id="logVehicleKmDate">-</b></div>
+        </div>
         <select id="logType">
           <option value="Bakım">🔧 Bakım</option>
           <option value="Akü">🔋 Akü</option>
@@ -692,9 +729,33 @@ function fixPlateSelectPlaceholders(){
   });
 }
 
+function updateLogVehicleKmGauge(){
+  const gauge = document.getElementById("logVehicleKmGauge");
+  if(!gauge) return;
+  const plate = document.getElementById("logPlate")?.value || "";
+  const vehicle = (db.vehicles || []).find(v => v.plate === plate);
+  const valueEl = gauge.querySelector(".kmGaugeValue");
+  const dateEl = document.getElementById("logVehicleKmDate");
+
+  if(!plate || !vehicle){
+    gauge.classList.add("hidden");
+    if(valueEl) valueEl.textContent = "-";
+    if(dateEl) dateEl.textContent = "-";
+    return;
+  }
+
+  const lastKmRecord = (db.monthlyKm || [])
+    .filter(k => k.plate === plate)
+    .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")))[0];
+
+  gauge.classList.remove("hidden");
+  if(valueEl) valueEl.textContent = fmt(vehicle.km) + " km";
+  if(dateEl) dateEl.textContent = lastKmRecord?.createdAt || "Kayıt yok";
+}
+
 function render(){
   bindMoneyKmFormatting();
-  setTimeout(fixPlateSelectPlaceholders, 0);
+  setTimeout(() => { fixPlateSelectPlaceholders(); updateLogVehicleKmGauge(); }, 0);
 
   const selectedInvoicePlate = document.getElementById('invoicePlateFilter')?.value || '';
 
@@ -933,6 +994,7 @@ async function addLog(){
     logPdf.value = "";
     logText.value = "";
     logPlate.value = "";
+    updateLogVehicleKmGauge();
     render();
     alert("Fatura dosyaları eklendi ve adminlere mail gönderildi.");
   }catch(e){
@@ -975,7 +1037,7 @@ async function uploadVehicleDocumentFromDocsPage(){
 }
 
 async function uploadVehicleDocument(){const selectedPlate_docPlate=requireSelectedPlate(docPlate,"Araç evrakı için lütfen plaka seçiniz.");if(!selectedPlate_docPlate)return;const f=docFile.files[0];if(!f)return alert("Dosya seç.");const form=new FormData();form.append("requester",currentUser.username);form.append("plate",selectedPlate_docPlate);form.append("docType",docType.value);form.append("docDate",docDate.value);form.append("note",docNote.value);form.append("file",f);try{const res=await fetch("/api/vehicle-documents",{method:"POST",body:form});const d=await parseJsonResponse(res);if(!d.ok)throw new Error(d.message);db=d.db;docPlate.value="";docFile.value="";docNote.value="";render()}catch(e){alert(e.message)}}
-async function uploadPenalty(){const selectedPlate_penaltyPlate=requireSelectedPlate(penaltyPlate,"Ceza takibi için lütfen plaka seçiniz.");if(!selectedPlate_penaltyPlate)return;const f=penaltyFile.files[0];if(!f)return alert("Dosya seç.");const form=new FormData();form.append("requester",currentUser.username);form.append("plate",selectedPlate_penaltyPlate);form.append("docType","Ceza Evrakı");form.append("docDate",penaltyDate.value);form.append("amount",n(penaltyAmount.value));form.append("note",penaltyNote.value);form.append("file",f);try{const res=await fetch("/api/vehicle-documents",{method:"POST",body:form});const d=await parseJsonResponse(res);if(!d.ok)throw new Error(d.message);db=d.db;penaltyPlate.value="";penaltyFile.value="";penaltyAmount.value="";penaltyNote.value="";render()}catch(e){alert(e.message)}}
+async function uploadPenalty(){const selectedPlate_penaltyPlate=requireSelectedPlate(penaltyPlate,"Ceza takibi için lütfen plaka seçiniz.");if(!selectedPlate_penaltyPlate)return;const f=penaltyFile.files[0];if(!f)return alert("Dosya seç.");const form=new FormData();form.append("requester",currentUser.username);form.append("plate",selectedPlate_penaltyPlate);form.append("docType","Ceza Evrakı");form.append("docDate",penaltyDate.value);form.append("amount",n(penaltyAmount.value));form.append("note",penaltyNote.value);form.append("file",f);try{const res=await fetch("/api/vehicle-documents",{method:"POST",body:form});const d=await parseJsonResponse(res);if(!d.ok)throw new Error(d.message);db=d.db;penaltyPlate.value="";penaltyFile.value="";penaltyAmount.value="";penaltyNote.value="";render();alert("Ceza yüklendi.")}catch(e){alert(e.message)}}
 async function addSupplierRecord(){
   if(!currentUser) return alert("Giriş gerekli.");
   const selectedPlate_supplierPlate = requireSelectedPlate(supplierPlate, "Tedarikçi işlemi için lütfen plaka seçiniz.");
