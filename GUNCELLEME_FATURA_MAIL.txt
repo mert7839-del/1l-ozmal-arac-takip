@@ -1,0 +1,17 @@
+1L ÖZMAL ARAÇ TAKİP – FATURA MAIL AÇ/KAPAT
+
+Yeni özellik:
+- Admin > Ayarlar bölümüne “Fatura Mail Bildirimi” anahtarı eklendi.
+- Açıkken fatura eklendiğinde mevcut mail bildirimleri çalışır.
+- Kapalıyken fatura eklenir ancak mail gönderilmez.
+- Ayar sadece settings.manage yetkisi olan kullanıcı tarafından değiştirilebilir (mevcut sistemde Admin).
+- Ayar db.json içinde settings.invoiceMailEnabled olarak tutulur ve varsayılanı açıktır.
+- Hem PDF Fatura ekleme hem de bakım/işlem kaydına fatura ekleme akışında uygulanır.
+
+VDS’ye:
+- server.js
+- public/index.html
+
+dosyalarını değiştir.
+Mevcut data/db.json, uploads ve .env dosyalarına dokunma.
+Sunucuyu yeniden başlat.

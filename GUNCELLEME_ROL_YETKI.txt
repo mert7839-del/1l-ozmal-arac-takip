@@ -1,0 +1,22 @@
+1L ÖZMAL ARAÇ TAKİP – ROL / YETKİ YÖNETİMİ
+
+Eklenenler:
+- Admin yeni özel roller oluşturabilir.
+- Admin rol adını ve yetkilerini düzenleyebilir.
+- Özel roller silinebilir; role atanmış kullanıcı varsa önce başka role alınmalıdır.
+- Admin üyelerin rolünü sonradan değiştirebilir.
+- Admin üyelerin ad, kullanıcı adı, e-posta ve şifresini düzenleyebilir.
+- Sistem rolleri: Admin, Yetkili, Yetkili2, Kullanıcı.
+- Admin rolü sistem yöneticisi olarak korunur ve kaldırılamaz.
+- Mevcut rollerin eski davranışlarını koruyan başlangıç yetkileri tanımlanmıştır.
+- Sunucu tarafındaki işlemler rol yetkilerine göre kontrol edilir.
+- Kullanıcının yetkisi olmayan veri modülleri /api/data üzerinden istemciye gönderilmez.
+- Kullanıcı listesinde şifreler istemciye gönderilmez.
+- Üyeler sekmesi ve rol yönetimi sadece kullanıcı yönetme yetkisi olan Admin'e açıktır.
+
+VDS:
+1) Mevcut server.js ve public/index.html dosyalarını yedekleyin.
+2) Bu paketteki server.js ve public/index.html dosyalarını kopyalayın.
+3) data/db.json dosyanızı değiştirmeyin; sistem ilk açılışta mevcut veritabanına rolleri otomatik ekler.
+4) Node uygulamasını yeniden başlatın.
+5) Admin > Üyeler bölümünden Rol Yönetimi alanını kullanın.

@@ -1,0 +1,13 @@
+GÜNCELLEME - DOMINO'S ANKARA
+
+Bu sürümde mevcut rol/yetki ve operasyon bazlı kullanıcı filtreleme korunmuştur.
+Yeni operasyon eklendi:
+- Domino's Ankara
+
+Domino's Ankara, Admin tarafından kullanıcıya operasyon olarak atanabilir.
+Operasyon filtresi bu operasyon için de geçerlidir.
+
+Kurulum:
+1. Mevcut projedeki server.js ve public/index.html dosyalarını değiştirin.
+2. data/db.json, uploads ve .env dosyalarınızı koruyun.
+3. Node uygulamasını yeniden başlatın.
